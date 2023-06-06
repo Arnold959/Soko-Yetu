@@ -1,0 +1,76 @@
+/* 
+Navbar Styles
+--------------
+*/
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+.navbar__title {
+  font-size: 24px;
+}
+
+.navbar__search-form {
+  display: flex;
+  align-items: center;
+}
+
+.navbar__search-input {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.navbar__search-button {
+  padding: 5px 10px;
+  background-color: #555;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.navbar__category-dropdown {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.navbar__auth {
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logout-button,
+.navbar__login-button,
+.navbar__signup-button {
+  padding: 5px 10px;
+  background-color: #555;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.navbar__cart {
+  display: flex;
+  align-items: center;
+}
+
+.navbar__cart-button {
+  padding: 5px 10px;
+  background-color: #555;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.navbar__cart-count {
+  background-color: #555;
+  color: white;
+  padding: 5px;
+  border-radius: 50%;
+}
