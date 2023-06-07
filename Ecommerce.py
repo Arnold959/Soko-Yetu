@@ -90,6 +90,23 @@ session.commit()
 #     id=1,
 #     name = "Electronics"
 # )
+# category2 = Category(
+#     id=4,
+#     name = "Phones and Tablets"
+# )
+# category3 = Category(
+#     id=5,
+#     name = "Computing"
+# )
+# category4 = Category(
+#     id=6,
+#     name = "Tv's and Audio"
+# )
+# session.add(category2)
+# session.add(category3)
+# session.add(category4)
+
+# session.commit()
 
 
 # session.add(commodity1)
