@@ -3,9 +3,12 @@ import React, { useState, useEffect } from 'react';
 const Carousel = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const carouselImages = [
-    'https://cms-assets.tutsplus.com/cdn-cgi/image/width=360/uploads/users/30/posts/92882/image-upload/bootstrap_carousel_component.png', // Replace with your own image URLs
-    'https://blog.hubspot.com/hs-fs/hubfs/How%20to%20Create%20a%20Carousel%20Slider%20for%20Your%20Website%20in%20Bootstrap%20CSS-1.gif?width=1500&name=How%20to%20Create%20a%20Carousel%20Slider%20for%20Your%20Website%20in%20Bootstrap%20CSS-1.gif',
-    'https://blog.hubspot.com/hs-fs/hubfs/How%20to%20Create%20a%20Carousel%20Slider%20for%20Your%20Website%20in%20Bootstrap%20CSS-1.gif?width=1500&name=How%20to%20Create%20a%20Carousel%20Slider%20for%20Your%20Website%20in%20Bootstrap%20CSS-1.gif',
+    'https://www.shutterstock.com/shutterstock/videos/1045012438/thumb/1.jpg', // Replace with your own image URLs
+    'https://grammarvocab.com/wp-content/uploads/2022/11/Slide1-3-4-1024x576.jpg',
+    'https://www.pngfind.com/pngs/m/441-4419685_ordinateurs-maroc-computer-sales-repair-hd-png-download.png',
+    'https://ke.jumia.is/cms/2023/W23/Adidas/Wed/712x384.jpg',
+    'https://ke.jumia.is/cms/2023/W23/CP/Sliders/Desktop/_SComputing.jpg',
+    
   ];
 
   useEffect(() => {
