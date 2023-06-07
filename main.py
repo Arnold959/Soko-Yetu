@@ -17,15 +17,15 @@ class ReviewSchema(BaseModel):
         orm_mode = True
 
 
-class ProductSchema(BaseModel):
-    id: int
-    name: str
-    price: int
-    description: str
-    category_id: int
-    stock: int
-    image_url: str
-    reviews: List[ReviewSchema]
+# class ProductSchema(BaseModel):
+#     id: int
+#     name: str
+#     price: int
+#     description: str
+#     category_id: int
+#     stock: int
+#     image_url: str
+#     reviews: List[ReviewSchema]
 
 class ProductPostSchema(BaseModel):
     id: int
@@ -40,8 +40,6 @@ class ProductPostSchema(BaseModel):
         orm_mode = True
                
         
-
-
 class SalesSchema(BaseModel):
     id: int
     product_id: int
@@ -53,7 +51,7 @@ class SalesSchema(BaseModel):
         orm_mode = True
 
 
-class UsersSchema(BaseModel):
+class UserSchema(BaseModel):
     id: int
     name: str
 
@@ -68,6 +66,14 @@ class CategorySchema(BaseModel):
     class Config:
         orm_mode = True
 
+class UpdatedCategorySchema(BaseModel):
+    id: Optional[int]= None
+    name: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
 
 class UpdatedProductSchema(BaseModel):
     id: Optional[int] = None
@@ -77,20 +83,26 @@ class UpdatedProductSchema(BaseModel):
     category_id: Optional[int] = None
     stock: Optional[int] = None
     image_url: Optional[str] = None
-    reviews: Optional[str] = None
+    
 
+    class Config:
+        orm_mode = True
+
+class UpdatedUserSchema(BaseModel):
+    id:Optional[int]  = None
+    name:Optional[str] = None
     class Config:
         orm_mode = True
 
 
 @app.get('/products')
-def get_all_products() -> List[ProductSchema]:
+def get_all_products() -> List[ProductPostSchema]:
     products = session.query(Product).all()
     return products
 
 
 @app.get('/users')
-def get_all_users() -> List[UsersSchema]:
+def get_all_users() -> List[UserSchema]:
     users = session.query(User).all()
     return users
 
@@ -114,13 +126,13 @@ def get_all_sales() -> List[SalesSchema]:
 
 
 @app.get('/products/{id}')
-def get_single_product(id: int) -> ProductSchema:
+def get_single_product(id: int) -> ProductPostSchema:
     product = session.query(Product).filter_by(id=id).first()
     return product
 
 
 @app.get('/users/{id}')
-def get_single_user(id: int) -> UsersSchema:
+def get_single_user(id: int) -> UserSchema:
     user = session.query(User).filter_by(id=id).first()
     return user
 
@@ -143,7 +155,12 @@ def get_single_sales(id: int) -> SalesSchema:
     return sales
 
 
-
+@app.post('/')
+def add_users(users:UserSchema) -> UserSchema:
+    addingUsers = User(**dict(users))
+    session.add(addingUsers)
+    session.commit()
+    return addingUsers
 
 
 @app.post('/product')
@@ -170,118 +187,68 @@ def add_category(category: CategorySchema)-> CategorySchema:
 
 
 
+@app.post('/reviews')
+def add_review(review:ReviewSchema) ->ReviewSchema:
+    reviewer = Review(**dict(review))
+    session.add(reviewer)
+    session.commit()
+    return reviewer
+
+@app.post('/sales')
+def add_sales(sales:SalesSchema) ->SalesSchema:
+    mySales = Sales(**dict(sales))
+    session.add(mySales)
+    session.commit()
+    return mySales
+
+
+@app.patch('/users/update/{id}')
+def updating_the_user(id:int,payload:UpdatedUserSchema) ->UserSchema:
+    updating_the_user = session.query(User).filter_by(id=id).first()
+    for key,value in payload.dict(exclude_unset=True).items():
+       setattr(updating_the_user,key,value) 
+    session.commit()
+    return updating_the_user
+
+
+@app.patch('/products/update/{id}')
+def updating_products(id:int,payload:UpdatedProductSchema) ->ProductPostSchema:
+    updated_product = session.query(Product).filter_by(id=id).first()
+    for key,value in payload.dict(exclude_unset = True).items():
+        setattr(updated_product,key,value)
+        session.commit()
+        return updated_product
+    
+@app.patch('/categories/update/{id}')
+def updating_categories(id:int,payload:UpdatedCategorySchema) ->CategorySchema:
+    updated_category = session.query(Category).filter_by(id=id).first()
+    for key,value in payload.dict(exclude_unset = True).items():
+        setattr(updated_category,key,value)
+        session.commit()
+        return updated_category
     
 
 
-@app.patch('/users/{id}')
-def update_user(id: int, user: UsersSchema):
-    existing_user = session.query(User).filter_by(id=id).first()
-    if not existing_user:
-        return {"error": "User not found"}, 404
-    for field in user.dict().keys():
-        setattr(existing_user, field, user.dict()[field])
+@app.put('/add_users/{user_id}')
+def update_user(user_id: int, payload: UpdatedUserSchema) -> UserSchema:
+    existing_user = session.query(User).filter_by(id=user_id).first()
+    if existing_user is None:
+        return {"error": "This user you are looking for has not been found"}
+    
+    for key, value in payload.dict(exclude_unset=True).items():
+        setattr(existing_user, key, value)
+    
     session.commit()
     return existing_user
+    
 
-
-@app.patch('/products/{id}')
-def update_product(id: int, product: ProductPostSchema):
-    existing_product = session.query(Product).filter_by(id=id).first()
-    if not existing_product:
-        return {"error": "Product not found"}, 404
-    for field in product.dict().keys():
-        setattr(existing_product, field, product.dict()[field])
+@app.delete('/users/delete{user_id}')
+def delete_user(id:int) -> None:
+    user_id = 1
+    our_user = session.query(User).filter_by(id=user_id).first()
+    session.delete(our_user)
     session.commit()
-    return existing_product
-
-@app.patch('/sales/{id}')
-def update_sales(id: int, sales: SalesSchema):
-    existing_sales = session.query(Sales).filter_by(id=id).first()
-    if not existing_sales:
-        return {"error": "Sales not found"}, 404
-    for field in sales.dict().keys():
-        setattr(existing_sales, field, sales.dict()[field])
-    session.commit()
-    return existing_sales
-
-@app.patch('/reviews/{id}')
-def update_review(id: int, review: ReviewSchema):
-    existing_review = session.query(Review).filter_by(id=id).first()
-    if not existing_review:
-        return {"error": "Review not found"}, 404
-    for field in review.dict().keys():
-        setattr(existing_review, field, review.dict()[field])
-    session.commit()
-    return existing_review
-
-@app.patch('/categories/{id}')
-def update_category(id: int, category: CategorySchema):
-    existing_category = session.query(Category).filter_by(id=id).first()
-    if not existing_category:
-        return {"error": "Category not found"}, 404
-    for field in category.dict().keys():
-        setattr(existing_category, field, category.dict()[field])
-    session.commit()
-    return existing_category
-
-@app.put('/users/{id}')
-def replace_user(id: int, user: UsersSchema):
-    existing_user = session.query(User).filter_by(id=id).first()
-    if not existing_user:
-        return {"error": "User not found"}, 404
-    for field in user.dict().keys():
-        setattr(existing_user, field, user.dict()[field])
-    session.commit()
-    return existing_user
-
-@app.put('/products/{id}')
-def replace_product(id: int, product: ProductPostSchema):
-    existing_product = session.query(Product).filter_by(id=id).first()
-    if not existing_product:
-        return {"error": "Product not found"}, 404
-    for field in product.dict().keys():
-        setattr(existing_product, field, product.dict()[field])
-    session.commit()
-    return existing_product
-
-@app.put('/sales/{id}')
-def replace_sales(id: int, sales: SalesSchema):
-    existing_sales = session.query(Sales).filter_by(id=id).first()
-    if not existing_sales:
-        return {"error": "Sales not found"}, 404
-    for field in sales.dict().keys():
-        setattr(existing_sales, field, sales.dict()[field])
-    session.commit()
-    return existing_sales
-
-@app.put('/reviews/{id}')
-def replace_review(id: int, review: ReviewSchema):
-    existing_review = session.query(Review).filter_by(id=id).first()
-    if not existing_review:
-        return {"error": "Review not found"}, 404
-    for field in review.dict().keys():
-        setattr(existing_review, field, review.dict()[field])
-    session.commit()
-    return existing_review
-
-@app.put('/categories/{id}')
-def replace_category(id: int, category: CategorySchema):
-    existing_category = session.query(Category).filter_by(id=id).first()
-    if not existing_category:
-        return {"error": "Category not found"}, 404
-    for field in category.dict().keys():
-        setattr(existing_category, field, category.dict()[field])
-    session.commit()
-    return existing_category
-
-@app.delete('/users/{id}')
-def delete_user(id: int):
-    existing_user = session.query(User).filter_by(id=id).first()
-    if not existing_user:
-        return {"error": "User not found"}, 404
-    session.delete(existing_user)
-    session.commit()
-    return {"message": "User deleted successfully"}
+    return our_user
 
 @app.delete('/product/delete{id}')
 def delete_product(id:int) ->None:
@@ -290,26 +257,13 @@ def delete_product(id:int) ->None:
     session.commit()
     return {"detail":f"Product with the id {id} has been deleted succesfully"}
 
-
-
-
-# @app.delete('/products/{id}')
-# def delete_product(id: int):
-#     existing_product = session.query(Product).filter_by(id=id).first()
-#     if not existing_product:
-#         return {"error": "Product not found"}, 404
-#     session.delete(existing_product)
-#     session.commit()
-#     return {"message": "Product deleted successfully"}
-
-@app.delete('/sales/{id}')
-def delete_sales(id: int):
-    existing_sales = session.query(Sales).filter_by(id=id).first()
-    if not existing_sales:
-        return {"error": "Sales not found"}, 404
-    session.delete(existing_sales)
+@app.delete('/sales/{sales_id}')
+def delete_sales(sales:SalesSchema) -> None:
+    sales_id = 1
+    deletedSales = session.query(Sales).filter_by(id=sales_id).first()
+    session.delete(deletedSales)
     session.commit()
-    return {"message": "Sales deleted successfully"}
+    return {"detail":"they have been deleted succesfully"}
 
 @app.delete('/reviews/{id}')
 def delete_review(id: int):
@@ -319,4 +273,14 @@ def delete_review(id: int):
     session.delete(existing_review)
     session.commit()
     return {"message": "Review deleted successfully"}
+
+@app.delete('/categories/{id}')
+def delete_category(id: int) -> None:
+    existing_category = session.query(Category).filter_by(id=id).first()
+    if not existing_category:
+        return {"error": "Category not found"}, 404
+    session.delete(existing_category)
+    session.commit()
+    return {"message": "Category deleted successfully"}
+
 
