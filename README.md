@@ -6,9 +6,7 @@ Welcome to the E-commerce Project! This project is a full-stack application that
     Features
     Requirements
     Installation
-    Usage
     API Endpoints
-    Contributing
     License
 
 ## Features
@@ -17,7 +15,6 @@ Welcome to the E-commerce Project! This project is a full-stack application that
     Search products by name or description
     Add items to the cart
     Update and remove items from the cart
-    Place orders and view order history
     Admin panel to manage products and categories
 
 ## Requirements

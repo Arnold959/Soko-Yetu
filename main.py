@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
@@ -12,13 +11,7 @@ origins = [
 ]
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 
 
 class ReviewSchema(BaseModel):
