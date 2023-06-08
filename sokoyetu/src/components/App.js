@@ -1,16 +1,35 @@
-import React from 'react';
-import Navbar from './Navbar';
-import Carousel from './Carousel';
-import Footer from './Footer';
-import ProductList from './ProductList';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./Navbar";
+import ProductList from "./ProductList";
+import AddProduct from "./AddProduct";
+import UpdateProduct from "./UpdateProduct";
 
 const App = () => {
   return (
-    <div>
+    <div className="app">
       <Navbar />
-      <Carousel />
-      <ProductList />
-      <Footer />
+      <Routes>
+        
+          {/* <ul>
+            <li>
+              <Link to="/">ProductList</Link>
+            </li>
+            <li>
+              <Link to="/AddProduct">Add Product</Link>
+            </li>
+            <li>
+              <Link to="/UpdateProduct">Update Product </Link>
+            </li>
+          </ul> */}
+        
+
+        
+          <Route path="/" element={<ProductList />} />
+          <Route path="/AddProduct" element={<AddProduct />} />
+          <Route path="/:id" element={<UpdateProduct />} />
+        
+      </Routes>
     </div>
   );
 };

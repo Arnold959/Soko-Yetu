@@ -1,38 +1,115 @@
-.App {
-  text-align: center;
+.product-list {
+  background-color: #1a1a1a;
+  color: #fff;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.product {
+  background-color: #222;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.product-name {
+  font-size: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.product-image {
+  width: 200px;
+  height: 200px;
+}
+
+.price {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.description {
+  margin-bottom: 10px;
+}
+
+.add-to-cart-button {
+  background-color: #ffcc00;
+  color: #222;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.rating {
+  margin-top: 10px;
+}
+
+.star {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.star.filled {
+  color: #ffcc00;
+}
+
+.star.empty {
+  color: #ccc;
+}
+
+.add {
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+}
+
+.add form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.add label {
+  margin-bottom: 10px;
+  color: #fff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add input {
+  padding: 5px;
+  margin-bottom: 10px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+}
+
+.add button {
+  background-color: #555;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+/* App.css */
+
+/* Dark theme styles */
+.updating {
+  background-color: #333;
+  color: #fff;
+}
+
+.updating nav a {
+  color: #fff;
+}
+
+.updating form {
+  color: #fff;
+}
+
+.updating label {
+  color: #fff;
+}
+
+.updating input {
+  background-color: #555;
+  color: #fff;
+}
+
+.updating button {
+  background-color: #555;
+  color: #fff;
 }
