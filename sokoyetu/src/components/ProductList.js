@@ -3,14 +3,19 @@ import React, { useState, useEffect } from 'react';
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     // Fetch products from the database using FastAPI
-    fetch('http://localhost:8000/products') // Replace with the actual endpoint URL
+    let apiUrl = 'http://localhost:8000/products'; // Replace with the actual endpoint URL
+    if (selectedCategory) {
+      apiUrl += `?category=${selectedCategory}`;
+    }
+    fetch(apiUrl)
       .then(response => response.json())
       .then(data => setProducts(data))
       .catch(error => console.log(error));
-  }, []);
+  }, [selectedCategory]);
 
   const handleAddToCart = () => {
     // Make API request to add item to cart using FastAPI
@@ -18,14 +23,11 @@ const ProductList = () => {
 
     // Update the cart count in the UI
     setCartCount(cartCount + 1);
-    alert('Added to cart successfully'); // Display success message
   };
 
   const handleRateProduct = (productId, rating) => {
     // Make API request to rate the product using FastAPI
     // Example: await fetch(`/api/products/${productId}/rate`, { method: 'POST', body: JSON.stringify({ rating }) });
-
-    alert(`Rated product ${productId} with ${rating} stars`); // Display success message
   };
 
   return (
