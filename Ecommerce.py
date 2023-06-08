@@ -7,6 +7,9 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     name = Column(String(50))
+    phone_number = Column(Integer)
+    email_address = Column(String(50), unique=True)
+    password = Column(String(50))
     sales = relationship("Sales", backref="sales_user")
     user_reviews = relationship("Review", backref="reviews_user")
 

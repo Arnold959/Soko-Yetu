@@ -339,6 +339,17 @@ footer
   cursor: pointer;
 }
 
+.delete-button {
+  background-color: #f9c74f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  margin-left: 100px;
+}
+
 .rating {
   margin-top: 10px;
 }

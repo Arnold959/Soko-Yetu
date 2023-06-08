@@ -11,23 +11,24 @@ const Navbar = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [cartItems, setCartItems] = useState([]);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-  
+
     // Replace the API request URL with your actual FastAPI endpoint
-    const apiUrl = `https://your-fastapi-endpoint.com/api/products?search=${searchValue}`;
-  
+    const apiUrl = `http://localhost:8000/products?search=${searchValue}`;
+
     try {
       // Make the API request
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
-  
+
       // Parse the response
       const data = await response.json();
-  
+
       // Handle the filtered products, such as updating the UI or state
       console.log(data);
     } catch (error) {
@@ -35,17 +36,18 @@ const Navbar = () => {
       // Handle any error that occurred during the API request
     }
   };
-  
+
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
 
-  const handleAddToCart = () => {
-    // Make API request to add item to cart using FastAPI
-    // Example: await fetch(`/api/cart/add`, { method: 'POST', body: JSON.stringify({ product: productId }) });
-    // Update the cart count in the UI
+  const handleAddToCart = (product) => {
+    const updatedCartItems = [...cartItems, product];
+    setCartItems(updatedCartItems);
     setCartCount(cartCount + 1);
   };
+
+  
 
   const handleLogin = async () => {
     try {
@@ -56,7 +58,7 @@ const Navbar = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         // Login successful, update the UI accordingly
         setIsLoggedIn(true);
@@ -71,11 +73,11 @@ const Navbar = () => {
       console.log('Login error:', error); // Handle any network or server errors
     }
   };
-  
+
   const handleLogout = async () => {
     try {
       await fetch('/api/logout');
-  
+
       // Logout successful, update the UI accordingly
       setIsLoggedIn(false);
       setUsername('');
@@ -83,14 +85,14 @@ const Navbar = () => {
       console.log('Logout error:', error); // Handle any network or server errors
     }
   };
-  
+
   const handleSignup = async () => {
     try {
       const response = await fetch('/api/signup', {
         method: 'POST',
         body: JSON.stringify({ username, password }),
       });
-  
+
       if (response.ok) {
         // Signup successful, update the UI accordingly
         setIsLoggedIn(true);
@@ -106,7 +108,7 @@ const Navbar = () => {
       console.log('Signup error:', error); // Handle any network or server errors
     }
   };
-  
+
   const openLoginModal = () => {
     setLoginModalOpen(true);
   };
@@ -138,7 +140,7 @@ const Navbar = () => {
 
     // Update the cart count
     setCartCount(0);
-  };
+  }; 
 
   return (
     <nav className="navbar">
@@ -242,21 +244,21 @@ const Navbar = () => {
         </Modal>
       </div>
       <div className="navbar__cart">
-        <button className="navbar__cart-button" onClick={handleAddToCart}>
+        <button className="navbar__cart-button">
           <i className="fas fa-shopping-cart"></i>
         </button>
-        {cartCount > 0 && (
+        {cartItems > 0 && (
           <div className="navbar__cart-details">
             <span className="navbar__cart-count" id="cart-count">
               {cartCount}
             </span>
             <div className="navbar__cart-dropdown">
               <ul className="navbar__cart-items">
-                {/* Render the cart items here */}
-                {/* Example: */}
-                <li className="navbar__cart-item">Product 1</li>
-                <li className="navbar__cart-item">Product 2</li>
+                {cartItems.map((item, index) => (
+                  <li key={index} className="navbar__cart-item">{item.name}</li>
+                ))}
               </ul>
+
               <div className="navbar__cart-actions">
                 <button
                   className="navbar__cart-checkout-button"
