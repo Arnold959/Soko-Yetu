@@ -170,7 +170,7 @@ def get_single_sales(id: int) -> SalesSchema:
     return sales
 
 
-@app.post('/')
+@app.post('/users')
 def add_users(users:UserSchema) -> UserSchema:
     addingUsers = User(**dict(users))
     session.add(addingUsers)
