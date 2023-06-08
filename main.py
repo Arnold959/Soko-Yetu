@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
@@ -12,13 +11,7 @@ origins = [
 ]
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
 
 
 class ReviewSchema(BaseModel):
@@ -69,6 +62,9 @@ class SalesSchema(BaseModel):
 class UserSchema(BaseModel):
     id: int
     name: str
+    phone_number: int
+    email_address:str
+    password: str
 
     class Config:
         orm_mode = True
@@ -106,13 +102,21 @@ class UpdatedProductSchema(BaseModel):
 class UpdatedUserSchema(BaseModel):
     id:Optional[int]  = None
     name:Optional[str] = None
+    phone_number: Optional[int] = None
+    email_address:Optional[str] = None
+    password : Optional[str] = None
     class Config:
         orm_mode = True
 
 
 @app.get('/products')
-def get_all_products() -> List[ProductPostSchema]:
-    products = session.query(Product).all()
+def get_all_products(search=None, category_id=None) -> List[ProductPostSchema]:
+    query = session.query(Product)
+    if search is not None:
+        query = query.filter(Product.name.ilike(f"%{search}%"))
+    if category_id is not None:
+        query = query.filter(Product.category_id == category_id)
+    products = query.all()
     return products
 
 

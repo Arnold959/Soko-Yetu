@@ -6,29 +6,44 @@ import "../App.css";
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     // Fetch products from the database using FastAPI
-    fetch('http://localhost:8000/products') // Replace with the actual endpoint URL
+    let apiUrl = 'http://localhost:8000/products'; // Replace with the actual endpoint URL
+    if (selectedCategory) {
+      apiUrl += `?category=${selectedCategory}`;
+    }
+    fetch(apiUrl)
       .then(response => response.json())
       .then(data => setProducts(data))
       .catch(error => console.log(error));
-  }, []);
+  }, [selectedCategory]);
 
-  const handleAddToCart = () => {
-    // Make API request to add item to cart using FastAPI
-    // Example: await fetch(`/api/cart/add`, { method: 'POST', body: JSON.stringify({ product: productId }) });
+  const handleAddToCart = (product) => {
+    // Add the selected product to the cart items
+    setCartItems([...cartItems, product]);
 
     // Update the cart count in the UI
     setCartCount(cartCount + 1);
-    alert('Added to cart successfully'); // Display success message
   };
 
   const handleRateProduct = (productId, rating) => {
     // Make API request to rate the product using FastAPI
     // Example: await fetch(`/api/products/${productId}/rate`, { method: 'POST', body: JSON.stringify({ rating }) });
+  };
 
-    alert(`Rated product ${productId} with ${rating} stars`); // Display success message
+  const handleDeleteProduct = async (productId) => {
+    try {
+      // Make API request to delete the product using FastAPI
+      await fetch(`http://localhost:8000/product/delete/${productId}`, { method: 'DELETE' });
+
+      // Update the products list by filtering out the deleted product
+      setProducts(products.filter(product => product.id !== productId));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

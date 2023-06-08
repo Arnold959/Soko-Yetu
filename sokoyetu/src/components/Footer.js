@@ -7,7 +7,7 @@ const Footer = () => {
     e.preventDefault();
 
     // Make an API request to submit the review
-    const response = await fetch('/api/reviews', {
+    const response = await fetch('http://localhost:8000/reviews', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ review }),
