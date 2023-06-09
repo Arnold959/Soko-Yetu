@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
 from pydantic import BaseModel
 from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
+from fastapi import HTTPException
+
 
 
 app = FastAPI()
@@ -35,18 +37,6 @@ class ReviewSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-
-# class ProductSchema(BaseModel):
-#     id: int
-#     name: str
-#     price: int
-#     description: str
-#     category_id: int
-#     stock: int
-#     image_url: str
-#     reviews: List[ReviewSchema]
 
 class ProductPostSchema(BaseModel):
     id: int
@@ -83,15 +73,6 @@ class UserSchema(BaseModel):
     class Config:
         orm_mode = True
         
-
-
-    class Config:
-        orm_mode = True
-
-
-class LogInSchema(BaseModel):
-    email_address:str
-    password: str
 
 class CategorySchema(BaseModel):
     id: int
@@ -224,22 +205,6 @@ def add_category(category: CategorySchema)-> CategorySchema:
     session.commit ()
     return my_category
 
-@app.post("/login")
-def login(credentials: LogInSchema):
-    email = credentials.email
-    password = credentials.password
-
-    # Query the database to check if the user exists
-    user = session.query(User).get(email)
-
-    if user and user.check_password(password):
-        # Login successful
-        return {"message": "Login successful"}
-
-    # Invalid credentials
-    return Response("Invalid credentials", status_code=401)
-
-
 @app.post('/reviews')
 def add_review(review:ReviewSchema) ->ReviewSchema:
     reviewer = Review(**dict(review))
@@ -256,12 +221,16 @@ def add_sales(sales:SalesSchema) ->SalesSchema:
 
 
 @app.patch('/users/update/{id}')
-def updating_the_user(id:int,payload:UpdatedUserSchema) ->UserSchema:
-    updating_the_user = session.query(User).filter_by(id=id).first()
-    for key,value in payload.dict(exclude_unset=True).items():
-       setattr(updating_the_user,key,value) 
+def update_user(id: int, payload: UpdatedUserSchema) -> UserSchema:
+    userer = session.query(User).get(id)
+    if not userer:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    for key, value in payload.dict(exclude_unset=True).items():
+        setattr(userer, key, value)
+
     session.commit()
-    return updating_the_user
+    return userer
 
 
 @app.patch('/products/update/{id}')
@@ -305,15 +274,6 @@ def update_product(product_id: int, payload: UpdatedProductSchema) -> ProductPos
     session.commit()
     return existing_product
     
-
-@app.delete('/users/delete{user_id}')
-def delete_user(id:int) -> None:
-    user_id = 1
-    our_user = session.query(User).filter_by(id=user_id).first()
-    session.delete(our_user)
-    session.commit()
-    return our_user
-
 @app.delete('/product/delete{id}')
 def delete_product(id:int) ->None:
     good = session.query(Product).filter_by(id=id).first()
@@ -321,13 +281,12 @@ def delete_product(id:int) ->None:
     session.commit()
     return {"detail":f"Product with the id {id} has been deleted succesfully"}
 
-@app.delete('/sales/{sales_id}')
-def delete_sales(sales:SalesSchema) -> None:
-    sales_id = 1
-    deletedSales = session.query(Sales).filter_by(id=sales_id).first()
-    session.delete(deletedSales)
+@app.delete('/sales/delete{id}')
+def delete_sales(id:int) ->None:
+    sold = session.query(Sales).filter_by(id=id).first()
+    session.delete(sold)
     session.commit()
-    return {"detail":"they have been deleted succesfully"}
+    return {"detail":f"Sales with the id {id} has been deleted succesfully"}
 
 @app.delete('/reviews/{id}')
 def delete_review(id: int):

@@ -71,6 +71,9 @@ Session = sessionmaker(bind=engine)
 session = Session()
 session.execute(text("DROP TABLE IF EXISTS user"))
 session.commit()
+session.execute(text("DROP TABLE IF EXISTS LogIn"))
+session.commit()
+
 
 # commodity1 = Product(
 #     id=1,
