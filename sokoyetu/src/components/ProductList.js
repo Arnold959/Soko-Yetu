@@ -49,6 +49,18 @@ const ProductList = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleRatingClick = (productId, rating) => {
+    // Update the product's rating when a star is clicked
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (product.id === productId) {
+          return { ...product, rating: rating };
+        }
+        return product;
+      })
+    );
+  };
+
   const filteredProducts = products.filter((product) => {
     // Filter products based on search term
     return (
@@ -59,10 +71,9 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
-
-      <Link
-      className="product_link"
-       to="/AddProduct">AddProduct</Link>
+      <Link className="product_link" to="/AddProduct">
+        AddProduct
+      </Link>
       <Link to="/UpdateProduct">UpdateProduct</Link>
       <Link to="/User">User</Link>
 
@@ -117,6 +128,7 @@ const ProductList = () => {
                 className={`star ${
                   star <= product.rating ? "filled" : "empty"
                 }`}
+                onClick={() => handleRatingClick(product.id, star)}
               >
                 ★
               </span>
