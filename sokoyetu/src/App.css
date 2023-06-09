@@ -113,3 +113,18 @@
   background-color: #555;
   color: #fff;
 }
+
+  
+.naving{
+  font-size: 100px;
+  background-color: #333;
+}
+*{
+  margin: 10px;
+}
+.subscribe-form{
+  width: 100%;
+}
+.product_link{
+  text-decoration: none;
+}

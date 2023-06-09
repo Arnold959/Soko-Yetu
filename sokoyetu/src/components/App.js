@@ -11,18 +11,6 @@ const App = () => {
     <div className="app">
       <Navbar />
       <Routes>
-        {/* <ul>
-            <li>
-              <Link to="/">ProductList</Link>
-            </li>
-            <li>
-              <Link to="/AddProduct">Add Product</Link>
-            </li>
-            <li>
-              <Link to="/UpdateProduct">Update Product </Link>
-            </li>
-          </ul> */}
-
         <Route path="/" element={<ProductList />} />
         <Route path="/AddProduct" element={<AddProduct />} />
         <Route path="/:id" element={<UpdateProduct />} />

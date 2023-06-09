@@ -11,7 +11,7 @@ const User = () => {
     e.preventDefault();
 
 
-    const apiUrl = "http://127.0.0.1:8000/users"; 
+    const apiUrl = `http://127.0.0.1:8000/users/`; 
 
     fetch(apiUrl, {
       method: "POST",
@@ -19,10 +19,10 @@ const User = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name,
+        name:name,
         phone_number: parseInt(phoneNumber),
         email_address: emailAddress,
-        password,
+        password:password
       }),
     })
       .then((response) => response.json())

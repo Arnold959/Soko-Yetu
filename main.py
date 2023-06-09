@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
 
+
 app = FastAPI()
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -77,9 +78,16 @@ class UserSchema(BaseModel):
     phone_number: int
     email_address:str
     password: str
+    
 
     class Config:
         orm_mode = True
+        
+
+
+    class Config:
+        orm_mode = True
+
 
 class LogInSchema(BaseModel):
     email_address:str
@@ -184,15 +192,13 @@ def get_single_sales(id: int) -> SalesSchema:
     return sales
 
 
-@app.post('/users')
-def add_users(users: UserSchema) -> UserSchema:
-    # Create a new user object from the received data
-    new_user = User(
-        name=users.name,
-        phone_number=users.phone_number,
-        email_address=users.email_address,
-        password=users.password
-    )
+@app.post('/add_user')
+def add_user(user: UserSchema) -> UserSchema:
+    use =User(**dict(user))
+    session.add(use)
+    session.commit()
+
+    return user
 
 
 
@@ -287,6 +293,17 @@ def update_user(user_id: int, payload: UpdatedUserSchema) -> UserSchema:
     
     session.commit()
     return existing_user
+@app.put('/add_products/{product_id}')
+def update_product(product_id: int, payload: UpdatedProductSchema) -> ProductPostSchema:
+    existing_product = session.query(Product).filter_by(id=product_id).first()
+    if existing_product is None:
+        return {"error": "This product you are looking for has not been found"}
+    
+    for key, value in payload.dict(exclude_unset=True).items():
+        setattr(existing_product, key, value)
+    
+    session.commit()
+    return existing_product
     
 
 @app.delete('/users/delete{user_id}')

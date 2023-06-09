@@ -5,19 +5,16 @@ import "../App.css";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     // Fetch products from the database using FastAPI
-    let apiUrl = "http://localhost:8000/products"; // Replace with the actual endpoint URL
-    if (selectedCategory) {
-      apiUrl += `?category=${selectedCategory}`;
-    }
+    const apiUrl = "http://localhost:8000/products"; // Replace with the actual endpoint URL
     fetch(apiUrl)
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.log(error));
-  }, [selectedCategory]);
+  }, []);
 
   const handleBuy = (productId) => {
     // Disable the card by updating the product's "disabled" property
@@ -31,35 +28,54 @@ const ProductList = () => {
     );
   };
 
-  const handleDelete = (productId) => {
-    // Remove the card from the products list
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.id !== productId)
-    );
+  const handleDelete = async (productId) => {
+    try {
+      // Remove the card from the products list on the frontend
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== productId)
+      );
+
+      // Send a DELETE request to the backend API to delete the product
+      const apiUrl = `http://127.0.0.1:8000/product/delete${productId}`; // Replace with the actual endpoint URL
+      await fetch(apiUrl, {
+        method: "DELETE",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    // Filter products based on search term
+    return (
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   return (
     <div className="product-list">
-      <Link to="/AddProduct">AddProduct</Link>
+
+      <Link
+      className="product_link"
+       to="/AddProduct">AddProduct</Link>
       <Link to="/UpdateProduct">UpdateProduct</Link>
       <Link to="/User">User</Link>
 
-      <div className="filter-category">
-        <label htmlFor="category">Filter by Category:</label>
-        <select
-          id="category"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          <option value="category1">Category 1</option>{" "}
-          {/* Add your category options here */}
-          <option value="category2">Category 2</option>
-          {/* Add more options as needed */}
-        </select>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearch}
+        />
       </div>
 
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <div
           key={product.id}
           className={`product ${product.disabled ? "disabled" : ""}`}
@@ -86,14 +102,13 @@ const ProductList = () => {
             </button>
           )}
 
+          <Link to={`/${product.id}`}>Update Product</Link>
           <button
             onClick={() => handleDelete(product.id)}
             className="delete-button"
           >
             Delete
           </button>
-
-          <Link to={`/${product.id}`}>Update Product</Link>
           <div className="rating">
             <span>Rate this product: </span>
             {[1, 2, 3, 4, 5].map((star) => (

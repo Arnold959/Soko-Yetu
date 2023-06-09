@@ -31,7 +31,7 @@ function UpdateProduct(){
 };
 
       fetch(
-        `http://127.0.0.1:8000/adder_products/${id}`,
+        `http://127.0.0.1:8000/add_products/${id}`,
         {
           method: "PUT",
           headers: {
