@@ -4,12 +4,23 @@ from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
 
 app = FastAPI()
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
 origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:3000",
-    "http://127.0.0.1:8000"
 ]
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 
@@ -110,13 +121,8 @@ class UpdatedUserSchema(BaseModel):
 
 
 @app.get('/products')
-def get_all_products(search=None, category_id=None) -> List[ProductPostSchema]:
-    query = session.query(Product)
-    if search is not None:
-        query = query.filter(Product.name.ilike(f"%{search}%"))
-    if category_id is not None:
-        query = query.filter(Product.category_id == category_id)
-    products = query.all()
+def get_products() -> List[ProductPostSchema]:
+    products = session.query(Product).all()
     return products
 
 
