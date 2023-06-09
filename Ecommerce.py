@@ -51,6 +51,18 @@ class Sales(Base):
     price = Column(Integer)
     user = relationship("User", backref="user_sales")
     product = relationship("Product", backref="products_sales")
+    
+class LogIn(Base):
+    __tablename__ = 'login'
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
+
+    def __init__(self, email, password):
+        self.email = email
+        self.password = password
+
 
 engine = create_engine('sqlite:///database.db')
 Base.metadata.create_all(engine)
@@ -85,10 +97,16 @@ session.commit()
 #     price = 50000
     
 # )
-# users1 = User(
+# users4 = User(
 #     id=1,
-#     name="Arnold"
+#     name="Arnold",
+#     phone_number=123456,
+#     email_address="arnold@yahoo.com",
+#     password="beyonce"
 # )
+# session.add(users4)
+# session.commit()
+
 # category1 = Category(
 #     id=1,
 #     name = "Electronics"
