@@ -38,12 +38,13 @@ function AddProduct() {
   console.log(formData);
   return (
     <div className="add">
+      <Link to="/UpdateProduct">UpdateProduct</Link>
+      <Link exact to="/">
+        ProductList
+      </Link>
+      <Link to="/User">User</Link>
       
-        <Link to="/UpdateProduct">UpdateProduct</Link>
-        <Link exact to="/add">
-          ProductList
-        </Link>
-      
+
       <form>
         <h5>ADD-PRODUCT-HERE</h5>
         <br />

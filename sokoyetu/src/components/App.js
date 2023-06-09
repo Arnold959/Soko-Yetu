@@ -4,14 +4,14 @@ import Navbar from "./Navbar";
 import ProductList from "./ProductList";
 import AddProduct from "./AddProduct";
 import UpdateProduct from "./UpdateProduct";
+import User from "./User";
 
 const App = () => {
   return (
     <div className="app">
       <Navbar />
       <Routes>
-        
-          {/* <ul>
+        {/* <ul>
             <li>
               <Link to="/">ProductList</Link>
             </li>
@@ -22,13 +22,11 @@ const App = () => {
               <Link to="/UpdateProduct">Update Product </Link>
             </li>
           </ul> */}
-        
 
-        
-          <Route path="/" element={<ProductList />} />
-          <Route path="/AddProduct" element={<AddProduct />} />
-          <Route path="/:id" element={<UpdateProduct />} />
-        
+        <Route path="/" element={<ProductList />} />
+        <Route path="/AddProduct" element={<AddProduct />} />
+        <Route path="/:id" element={<UpdateProduct />} />
+        <Route path="/User" element={<User />} />
       </Routes>
     </div>
   );

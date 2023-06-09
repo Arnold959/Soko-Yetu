@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Carousel from "./Carousel";
 import Footer from "./Footer";
 import "../App.css";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
     // Fetch products from the database using FastAPI
@@ -22,38 +19,30 @@ const ProductList = () => {
       .catch((error) => console.log(error));
   }, [selectedCategory]);
 
-  const handleAddToCart = (product) => {
-    // Add the selected product to the cart items
-    setCartItems([...cartItems, product]);
-
-    // Update the cart count in the UI
-    setCartCount(cartCount + 1);
+  const handleBuy = (productId) => {
+    // Disable the card by updating the product's "disabled" property
+    setProducts((prevProducts) =>
+      prevProducts.map((product) => {
+        if (product.id === productId) {
+          return { ...product, disabled: true };
+        }
+        return product;
+      })
+    );
   };
 
-  const handleRateProduct = (productId, rating) => {
-    // Make API request to rate the product using FastAPI
-    // Example: await fetch(`/api/products/${productId}/rate`, { method: 'POST', body: JSON.stringify({ rating }) });
-  };
-
-  const handleDeleteProduct = async (productId) => {
-    try {
-      // Make API request to delete the product using FastAPI
-      await fetch(`http://localhost:8000/product/delete/${productId}`, {
-        method: "DELETE",
-      });
-
-      // Update the products list by filtering out the deleted product
-      setProducts(products.filter((product) => product.id !== productId));
-    } catch (error) {
-      console.log(error);
-    }
+  const handleDelete = (productId) => {
+    // Remove the card from the products list
+    setProducts((prevProducts) =>
+      prevProducts.filter((product) => product.id !== productId)
+    );
   };
 
   return (
     <div className="product-list">
       <Link to="/AddProduct">AddProduct</Link>
       <Link to="/UpdateProduct">UpdateProduct</Link>
-      <Carousel />
+      <Link to="/User">User</Link>
 
       <div className="filter-category">
         <label htmlFor="category">Filter by Category:</label>
@@ -71,7 +60,10 @@ const ProductList = () => {
       </div>
 
       {products.map((product) => (
-        <div key={product.id} className="product">
+        <div
+          key={product.id}
+          className={`product ${product.disabled ? "disabled" : ""}`}
+        >
           <h3 className="product-name">{product.name}</h3>
           <img
             src={product.image_url}
@@ -81,12 +73,26 @@ const ProductList = () => {
           <div className="price">${product.price}</div>
           <div className="description">{product.description}</div>
 
+          {!product.disabled ? (
+            <button
+              onClick={() => handleBuy(product.id)}
+              className="buy-button"
+            >
+              Buy
+            </button>
+          ) : (
+            <button className="buy-button" disabled>
+              Bought
+            </button>
+          )}
+
           <button
-            onClick={() => handleAddToCart(product)}
-            className="add-to-cart-button"
+            onClick={() => handleDelete(product.id)}
+            className="delete-button"
           >
-            Add to Cart
+            Delete
           </button>
+
           <Link to={`/${product.id}`}>Update Product</Link>
           <div className="rating">
             <span>Rate this product: </span>
@@ -96,7 +102,6 @@ const ProductList = () => {
                 className={`star ${
                   star <= product.rating ? "filled" : "empty"
                 }`}
-                onClick={() => handleRateProduct(product.id, star)}
               >
                 ★
               </span>

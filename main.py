@@ -181,11 +181,15 @@ def get_single_sales(id: int) -> SalesSchema:
 
 
 @app.post('/users')
-def add_users(users:UserSchema) -> UserSchema:
-    addingUsers = User(**dict(users))
-    session.add(addingUsers)
-    session.commit()
-    return addingUsers
+def add_users(users: UserSchema) -> UserSchema:
+    # Create a new user object from the received data
+    new_user = User(
+        name=users.name,
+        phone_number=users.phone_number,
+        email_address=users.email_address,
+        password=users.password
+    )
+
 
 
 @app.post('/product')
