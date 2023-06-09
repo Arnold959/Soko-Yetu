@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from pydantic import BaseModel
 from Ecommerce import Product, Sales, Review, Category, User, session
 from typing import List, Optional
@@ -23,6 +23,7 @@ class ReviewSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 
 # class ProductSchema(BaseModel):
@@ -69,6 +70,9 @@ class UserSchema(BaseModel):
     class Config:
         orm_mode = True
 
+class LogInSchema(BaseModel):
+    email_address:str
+    password: str
 
 class CategorySchema(BaseModel):
     id: int
@@ -204,6 +208,20 @@ def add_category(category: CategorySchema)-> CategorySchema:
     session.commit ()
     return my_category
 
+@app.post("/login")
+def login(credentials: LogInSchema):
+    email = credentials.email
+    password = credentials.password
+
+    # Query the database to check if the user exists
+    user = session.query(User).get(email)
+
+    if user and user.check_password(password):
+        # Login successful
+        return {"message": "Login successful"}
+
+    # Invalid credentials
+    return Response("Invalid credentials", status_code=401)
 
 
 @app.post('/reviews')
